@@ -1,0 +1,17 @@
+install python, pip, virtual env, 
+activate virtual env
+install django
+create django project
+modify 
+pip install package_installation
+
+go to project dir
+
+python manage.py runserver
+
+blogapp/
+├── user/
+│   └── templates/
+│       └── user/
+│           └── home.html
+└── views.py

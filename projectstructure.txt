@@ -1,0 +1,19 @@
+project_name/
+│── manage.py
+│── project_name/
+│   │── __init__.py
+│   │── settings.py
+│   │── urls.py
+│   │── asgi.py
+│   │── wsgi.py
+│── app_name/
+│   │── migrations/
+│   │── __init__.py
+│   │── admin.py
+│   │── apps.py
+│   │── models.py
+│   │── tests.py
+│   │── views.py
+│── static/
+│── templates/
+│── db.sqlite3 #database_name
