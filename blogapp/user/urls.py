@@ -13,7 +13,10 @@
 from django.urls import path
 from . import views
 
+# serverurl/home/home/
 urlpatterns = [
     path('home/', views.rendering_first_template, name='home'),
+    path('extend/',views.call_extend,name='extend')
 ]
- 
+#  http://127.0.0.1:8000/home/home/
+#  http://127.0.0.1:8000/home/extend/

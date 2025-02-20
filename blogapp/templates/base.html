@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}My Website{% endblock %}</title>
+    <title>{% block title %}Base Page Title{% endblock %}</title>
 </head>
 <body>
     <header>
@@ -16,9 +16,12 @@
     </header>
 
     <main>
+        content start
         {% block content %}
-        
+
         {% endblock %}
+        content end
+      
     </main>
 
     <footer>
