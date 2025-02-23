@@ -23,11 +23,11 @@ Including another URLconf
 
 from django.contrib import admin
 from django.urls import path , include
-
+#blogapp
 urlpatterns = [
     # shift+alt+down key
     path('admin/', admin.site.urls),
-    path('home/', include('user.urls')),
+    path('user/', include('user.urls')),
+    # path('register/',)
 ]
 
-# http://127.0.0.1:8000/home/

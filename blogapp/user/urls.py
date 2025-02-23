@@ -15,8 +15,11 @@ from . import views
 
 # serverurl/home/home/
 urlpatterns = [
-    path('home/', views.rendering_first_template, name='home'),
-    path('extend/',views.call_extend,name='extend')
+    # path('home/', views.rendering_first_template, name='home'),
+    # path('extend/',views.call_extend,name='extend')
+    # path('login/'),
+    path('register/',views.register),
+    path('login/',views.login)
 ]
 #  http://127.0.0.1:8000/home/home/
 #  http://127.0.0.1:8000/home/extend/
