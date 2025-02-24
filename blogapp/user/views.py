@@ -30,9 +30,13 @@ def login(request):
         user_email = request.POST.get('email')
         user_password = request.POST.get('password')
         try:
-            user = User.objects.get(email = user_email, password = user_password)    
+            user = User.objects.get(email = user_email, password = user_password)   
+            print(user.name) 
             print("User exist")
-            return HttpResponse("Login Successed")
+            request.session['useremail']=user_email
+            request.session['username']= user.name
+            # return HttpResponse("Login Successed")
+            return redirect('/task/crud/')
         except:
             
             print("NOt avaibale")

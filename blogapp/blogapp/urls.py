@@ -28,6 +28,7 @@ urlpatterns = [
     # shift+alt+down key
     path('admin/', admin.site.urls),
     path('user/', include('user.urls')),
+    path('task/', include('todotask.urls')),
     # path('register/',)
 ]
 
