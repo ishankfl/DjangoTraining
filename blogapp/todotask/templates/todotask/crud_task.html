@@ -33,6 +33,21 @@
             {{each.created_at}}
             <br>
             <br>
+            <form action="/task/signle_view/{{each.id}}/" method="POST">
+                {% csrf_token %}
+                <button type="submit">View more</button>
+            </form>
+            <form action="/task/update/" method="POST">
+                {% csrf_token %}
+                <input type="hidden" name="task_id" value = {{each.id}}>
+                <input type="text" name="task_name_updated" placeholder="tassk _name" value="{{each.title}}">
+                <input type="text" name="task_description_updated" placeholder="task description" value="{{each.description}}">
+                <button type="submit"> Update </button>
+            </form>
+            <form action="/task/delete/{{each.id}}/" method="POST">
+                {% csrf_token %}
+                <button type="submit">Delete</button>
+            </form>
         {%endfor%}
     </div>
 </body>

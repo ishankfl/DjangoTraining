@@ -4,5 +4,5 @@ from user.models import *
 class Task(models.Model):
     title = models.CharField(max_length=200)
     description = models.CharField(max_length=200)
-    created_at = models.DateField(auto_now_add=True)
+    created_at = models.DateTimeField(auto_now_add=True)
     user = models.ForeignKey(User,on_delete=models.CASCADE,blank=True)
