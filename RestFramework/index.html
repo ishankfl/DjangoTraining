@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Model List</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+    <script>
+        async function fetchUsers() {
+            const response = await fetch('http://127.0.0.1:8000/api/viewset-example/model-users/');
+            const users = await response.json();
+            const tableBody = document.getElementById('userTableBody');
+            tableBody.innerHTML = '';
+            users.forEach(user => {
+                const row = `<tr>
+                    <td>${user.id}</td>
+                    <td>${user.username}</td>
+                    <td>${user.age}</td>
+                    <td>${user.created_at}</td>
+                </tr>`;
+                tableBody.innerHTML += row;
+            });
+        }
+        async function submitForm(event) {
+            event.preventDefault();
+            const formData = {
+                username: document.getElementById('username').value,
+                email: document.getElementById('email').value,
+                age: document.getElementById('age').value,
+                password: document.getElementById('password').value
+            };
+            const response = await fetch('http://127.0.0.1:8000/api/viewset-example/model-users/', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(formData)
+            });
+            if (response.ok) {
+                alert('User added successfully!');
+                fetchUsers();
+                document.getElementById('userForm').reset();
+            } else {
+                alert('Failed to add user');
+            }
+        }
+        document.addEventListener("DOMContentLoaded", fetchUsers);
+    </script>
+</head>
+<body>
+    <h2>User Model List</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Username</th>
+                <th>Age</th>
+                <th>Created At</th>
+            </tr>
+        </thead>
+        <tbody id="userTableBody"></tbody>
+    </table>
+    
+    <h2>Add New User</h2>
+    <form id="userForm" onsubmit="submitForm(event)">
+        <label for="username">Username:</label>
+        <input type="text" id="username" name="username" required><br>
+        
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" required><br>
+        
+        <label for="age">Age:</label>
+        <input type="number" id="age" name="age" required><br>
+        
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" required><br>
+        
+        <button type="submit">Submit</button>
+    </form>
+</body>
+</html>
