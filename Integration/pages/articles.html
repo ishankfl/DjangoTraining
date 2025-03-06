@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Articles</title>
+    <script src="../script.js" defer></script>
+    <link rel="stylesheet" href="../assets/style.css">
+
+</head>
+<body onload="checkAuth()">
+    <div class="container">
+        <h2>Welcome <span id="user-name"></span></h2>
+        <p>Email: <span id="user-email"></span></p>
+        <button onclick="logout()">Logout</button>
+
+        <h2>Articles</h2>
+        <input type="text" id="article-title" placeholder="Title">
+        <textarea id="article-content" placeholder="Content"></textarea>
+        <button onclick="createArticle()">Create Article</button>
+        <div id="articles-list"></div>
+    </div>
+</body>
+</html>

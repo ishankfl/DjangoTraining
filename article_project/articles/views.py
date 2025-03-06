@@ -1,11 +1,15 @@
+from rest_framework_simplejwt.views import TokenObtainPairView
 from django.shortcuts import render
 from rest_framework import generics
 from django.contrib.auth.models import User
 
-from articles.serializers import UserDetailsSerializer, ArticleSerilizers
+from articles.serializers import CustomTokenSerializer, UserDetailsSerializer, ArticleSerilizers
 from rest_framework.views  import APIView 
 from rest_framework.response import *
 from .models import Article
+
+from rest_framework_simplejwt.authentication import JWTAuthentication
+from rest_framework.permissions import IsAuthenticated
 # Create your views here.
 
 class RegisterView(generics.CreateAPIView):
@@ -30,6 +34,11 @@ class LoginView(APIView):
             return Response({"error": "Invalid Password"}, status=400)
 
 class ArticleCreateGetView(generics.ListAPIView): #retrive get/ #detroy delete
+    authentication_classes =[JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+    
     queryset = Article.objects.all()
     serializer_class = ArticleSerilizers
-    
+
+class CustomTokenView(TokenObtainPairView):
+    serializer_class = CustomTokenSerializer

@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JWT Auth App</title>
+    <link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+    <div class="container">
+        <h2>Welcome to JWT Auth App</h2>
+        <p>Manage your authentication and articles securely.</p>
+        
+        <button onclick="navigateTo()">Get Started</button>
+    </div>
+
+    <script>
+        function navigateTo() {
+            let token = localStorage.getItem("access_token");
+            if (token) {
+                window.location.href = "pages/articles.html"; // Redirect to Articles page if logged in
+            } else {
+                window.location.href = "pages/login.html"; // Redirect to Login page if not logged in
+            }
+        }
+    </script>
+</body>
+</html>
