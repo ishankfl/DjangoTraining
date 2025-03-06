@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JWT Auth & CRUD</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+
+        .container {
+            max-width: 400px;
+            margin: 20px auto;
+        }
+
+        input,
+        button {
+            display: block;
+            width: 100%;
+            margin: 10px 0;
+            padding: 10px;
+        }
+
+        #dashboard,
+        #article-section {
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container" id="login-section">
+        <h2>Login</h2>
+        <input type="text" id="login-username" placeholder="Username">
+        <input type="password" id="login-password" placeholder="Password">
+        <button onclick="login()">Login</button>
+    </div>
+
+    <div class="container" id="signup-section">
+        <h2>Sign Up</h2>
+        <input type="text" id="signup-username" placeholder="Username">
+        <input type="email" id="signup-email" placeholder="Email">
+        <input type="password" id="signup-password" placeholder="Password">
+        <button onclick="signup()">Sign Up</button>
+    </div>
+
+    <div class="container" id="dashboard">
+        <h2>Welcome <span id="user-name"></span></h2>
+        <p>Email: <span id="user-email"></span></p>
+        <button onclick="logout()">Logout</button>
+    </div>
+
+    <div class="container" id="article-section">
+        <h2>Articles</h2>
+        <input type="text" id="article-title" placeholder="Title">
+        <textarea id="article-content" placeholder="Content"></textarea>
+        <button onclick="createArticle()">Create Article</button>
+        <div id="articles-list"></div>
+    </div>
+
+    <script>
+        let accessToken = "";
+
+        function login() {
+            let username = document.getElementById("login-username").value;
+            let password = document.getElementById("login-password").value;
+
+            fetch("http://127.0.0.1:8000/articles/api/custom-token/", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ username, password })
+            })
+                .then(response => {
+                    console.log("Status Code:", response.status); // Log status code
+
+                    if (!response.ok) {
+                        return response.json().then(errData => {
+                            throw new Error(`Error ${response.status}: ${errData.detail || "Invalid credentials"}`);
+                        });
+                    }
+
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.access) {
+                        let accessToken = data.access;
+                        localStorage.setItem("access_token", accessToken); // Store token in local storage
+                        console.log("Local storageeee seted")
+                        try {
+                            let decoded = JSON.parse(atob(accessToken.split('.')[1])); // Decode JWT
+                            document.getElementById("user-name").innerText = decoded.username || "User";
+                            document.getElementById("user-email").innerText = decoded.email || "No Email";
+                        } catch (error) {
+                            console.error("Error decoding token:", error);
+                        }
+
+                        // Hide login/signup and show dashboard
+                        document.getElementById("login-section").style.display = "none";
+                        document.getElementById("signup-section").style.display = "none";
+                        document.getElementById("dashboard").style.display = "block";
+                        document.getElementById("article-section").style.display = "block";
+                        fetchArticles();
+                    }
+                })
+                .catch(error => {
+                    console.error("Login Error:", error.message);
+                    alert(error.message); // Show meaningful error to the user
+                });
+        }
+
+        function signup() {
+            let username = document.getElementById("signup-username").value;
+            let email = document.getElementById("signup-email").value;
+            let password = document.getElementById("signup-password").value;
+
+            fetch("http://127.0.0.1:8000/articles/register/", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ username, email, password })
+            })
+                .then(response => {
+                    console.log("Status Code:", response.status); // Logs the status code
+
+                    // Check if the response is successful
+                    if (!response.ok) {
+                        return response.json().then(errData => {
+                            throw new Error(`Error ${response.status}: ${errData.detail || "Something went wrong"}`);
+                        });
+                    }
+
+                    return response.json();
+                })
+                .then(data => {
+                    console.log("Response Data:", data);
+                    alert("User registered! Please login.");
+                })
+                .catch(error => {
+                    console.error("Error:", error.message);
+                    alert(error.message); // Show error message in alert
+                });
+        }
+
+
+        function logout() {
+            accessToken = "";
+            document.getElementById("login-section").style.display = "block";
+            document.getElementById("signup-section").style.display = "block";
+            document.getElementById("dashboard").style.display = "none";
+            document.getElementById("article-section").style.display = "none";
+        }
+
+        function fetchArticles() {
+            fetch("http://127.0.0.1:8000/articles/", {
+                method: "GET",
+                headers: { "Authorization": `Bearer ${accessToken}` }
+            })
+                .then(response => response.json())
+                .then(data => {
+                    let articlesDiv = document.getElementById("articles-list");
+                    articlesDiv.innerHTML = "";
+                    data.forEach(article => {
+                        articlesDiv.innerHTML += `<div><h3>${article.title}</h3><p>${article.content}</p>
+                    <button onclick="deleteArticle(${article.id})">Delete</button></div>`;
+                    });
+                });
+        }
+
+        function createArticle() {
+            let title = document.getElementById("article-title").value;
+            let content = document.getElementById("article-content").value;
+
+            fetch("http://127.0.0.1:8000/api/articles/", {
+                method: "POST",
+                headers: { "Content-Type": "application/json", "Authorization": `Bearer ${accessToken}` },
+                body: JSON.stringify({ title, content, author: 1 })
+            }).then(response => response.json()).then(() => fetchArticles());
+        }
+
+        function deleteArticle(id) {
+            fetch(`http://127.0.0.1:8000/api/articles/${id}/`, {
+                method: "DELETE",
+                headers: { "Authorization": `Bearer ${accessToken}` }
+            }).then(() => fetchArticles());
+        }
+    </script>
+</body>
+
+</html>

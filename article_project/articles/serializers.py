@@ -12,6 +12,7 @@ class UserDetailsSerializer(serializers.ModelSerializer):
         read_only_fields =['is_superuser', 'is_staff']
     
     def create(self,validated_data):
+        print(validated_data)
         return User.objects.create_user(
             username=validated_data['username'],
             email=validated_data['email'],

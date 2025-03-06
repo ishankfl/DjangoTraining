@@ -9,7 +9,7 @@ from rest_framework.response import *
 from .models import Article
 
 from rest_framework_simplejwt.authentication import JWTAuthentication
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny
 # Create your views here.
 
 class RegisterView(generics.CreateAPIView):
@@ -33,12 +33,12 @@ class LoginView(APIView):
         else:
             return Response({"error": "Invalid Password"}, status=400)
 
-class ArticleCreateGetView(generics.ListAPIView): #retrive get/ #detroy delete
+class ArticleCreateGetView(generics.ListCreateAPIView): #retrive get/ #detroy delete
     authentication_classes =[JWTAuthentication]
     permission_classes = [IsAuthenticated]
     
     queryset = Article.objects.all()
     serializer_class = ArticleSerilizers
-
+    permission_classes = [AllowAny] 
 class CustomTokenView(TokenObtainPairView):
     serializer_class = CustomTokenSerializer
