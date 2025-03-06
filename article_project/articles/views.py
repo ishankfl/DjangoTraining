@@ -33,12 +33,32 @@ class LoginView(APIView):
         else:
             return Response({"error": "Invalid Password"}, status=400)
 
-class ArticleCreateGetView(generics.ListCreateAPIView): #retrive get/ #detroy delete
-    authentication_classes =[JWTAuthentication]
+class ArticleCreateGetView(generics.ListCreateAPIView ): #retrive get/ #detroy delete
     permission_classes = [IsAuthenticated]
-    
+
     queryset = Article.objects.all()
     serializer_class = ArticleSerilizers
-    permission_classes = [AllowAny] 
+    authentication_classes =[JWTAuthentication]
+
+    # def get_queryset(self):
+    #     return Article.objects.all()
+    
+class ListArticleByUser(generics.ListCreateAPIView):
+    serializer_class = ArticleSerilizers
+    authentication_classes =[JWTAuthentication]
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        print("in get")
+        user = self.request.user
+        print(user.email)
+        print(self.request.data)
+        return Article.objects.filter(author=user)
+
+
+class ArticleUpdateDeleteEdit(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Article.objects.all()
+    serializer_class = ArticleSerilizers
+    
 class CustomTokenView(TokenObtainPairView):
     serializer_class = CustomTokenSerializer

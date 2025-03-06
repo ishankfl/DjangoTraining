@@ -25,7 +25,7 @@ SECRET_KEY = 'django-insecure-z!uf)l+n+wtdj!b7#n*(qvcq9scb6+dw!g+4xemyh1++p6y3ux
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['*','127.0.0.1:5500']
+ALLOWED_HOSTS = ['*','127.0.0.1:5501']
 
 
 # Application definition
@@ -54,7 +54,13 @@ MIDDLEWARE = [
         'corsheaders.middleware.CorsMiddleware',  # Add this line
 
 ]
-CORS_ALLOW_ALL_ORIGINS = True  # Allows all origins
+# CORS_ALLOW_ALL_ORIGINS = True  # Allows all origins
+CORS_ALLOWED_ORIGINS = [
+    'http://127.0.0.1:5501',
+    
+    "http://127.0.0.1:5501",  # Example: React development server
+    "https://myfrontend.com",  # Example: Your production frontend domain
+]
 
 ROOT_URLCONF = 'article_project.urls'
 
@@ -128,11 +134,11 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
 REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': (
-        'rest_framework_simplejwt.authentication.JWTAuthentication',
-    ),
+    # 'DEFAULT_AUTHENTICATION_CLASSES': (
+    #     'rest_framework_simplejwt.authentication.JWTAuthentication',
+    # ),
+    # 'DEFAULT_PERMISSION_CLASSES': ['rest_framework.permissions.IsAuthenticated']
 }
 
 SIMPLE_JWT = {
