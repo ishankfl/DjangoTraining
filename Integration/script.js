@@ -8,6 +8,10 @@ function login() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username, password })
+        // {
+        //     'username':username,
+        //     'password':username
+        // }
     })
     .then(response => response.json())
     .then(data => {
@@ -66,7 +70,7 @@ function fetchArticles() {
 
     fetch(`${API_URL}/articles/`, {
         method: "GET",
-        // headers: { "Authorization": `Bearer ${accessToken}` }
+        headers: { "Authorization": `Bearer ${accessToken}` }
     })
     .then(response => response.json())
     .then(data => {
@@ -82,15 +86,30 @@ function fetchArticles() {
     });
 }
 
+function getUserIdFromToken() {
+    let accessToken = localStorage.getItem("access_token");
+    if (!accessToken) return null;
+
+    try {
+        let payload = JSON.parse(atob(accessToken.split('.')[1])); // Decode JWT payload
+        console.log(payload)
+        return payload.user_id; // Ensure your backend includes `user_id` in JWT
+    } catch (error) {
+        console.error("Error decoding token:", error);
+        return null;
+    }
+}
+
 function createArticle() {
+let userId = (getUserIdFromToken())
     let title = document.getElementById("article-title").value;
     let content = document.getElementById("article-content").value;
     let accessToken = localStorage.getItem("access_token");
 
     fetch(`${API_URL}/articles/`, {
         method: "POST",
-        headers: { "Content-Type": "application/json", "Authorization": `` },
-        body: JSON.stringify({ title, content, author: 1 })
+        headers: { "Content-Type": "application/json", "Authorization": `Bearer ${accessToken}` },
+        body: JSON.stringify({ title, content, author: userId })
     })
     .then(response => response.json())
     .then(() => fetchArticles());
@@ -99,9 +118,33 @@ function createArticle() {
 function deleteArticle(id) {
     let accessToken = localStorage.getItem("access_token");
 
-    fetch(`${API_URL}/api/articles/${id}/`, {
+    fetch(`${API_URL}/articles/data/${id}/`, {
         method: "DELETE",
         headers: { "Authorization": `Bearer ${accessToken}` }
     })
     .then(() => fetchArticles());
+}
+
+
+function fetchUserArticles() {
+    let accessToken = localStorage.getItem("access_token");
+    console.log(accessToken)
+
+    fetch(`${API_URL}/articles/list-article-by-user`, {
+        method: "GET",
+        headers: { "Authorization": `Bearer ${accessToken}` }, 
+    })
+    .then(response => response.json())
+    .then(data => {
+        let articlesDiv = document.getElementById("user-articles-list");
+        articlesDiv.innerHTML = "";
+        data.forEach(article => {
+            articlesDiv.innerHTML += `<div>
+                <h3>${article.title}</h3>
+                <p>${article.content}</p>
+                <button onclick="deleteArticle(${article.id})">Delete</button>
+            </div>`;
+        });
+    })
+    .catch(error => console.error("Error fetching user articles:", error));
 }
