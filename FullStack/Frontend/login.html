@@ -1,0 +1,64 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+</head>
+<body>
+
+    <h2>Login</h2>
+
+    <form id="loginForm" method="POST">
+        <label for="email">Email:</label><br>
+        <input type="email" id="email" name="email" required><br><br>
+
+        <label for="password">Password:</label><br>
+        <input type="password" id="password" name="password" required><br><br>
+
+        <button onclick="Login(event)">Login</button>
+    </form>
+    <script>
+
+    function Login(event) {
+        event.preventDefault(); // Prevent page refresh
+        console.log("Clicked");
+
+        var email = document.getElementById("email").value; // Email field maa haleko value
+        var password = document.getElementById("password").value;
+
+        fetch('http://127.0.0.1:8000/user/api/login/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ email: email, password: password }) // Convert to JSON string
+            // """{'email':'email'}
+        })
+        .then(response => {
+            console.log("Response Status:", response.status);
+            return response.json(); // Parse JSON response
+        })
+        .then(data => {
+            console.log("Response Data:", data);
+            if (data.access) {
+                alert("Login Successful");
+                localStorage.setItem("token", data.access); // Save token for future requests
+                console.log("helloworld")
+                
+                // alert("hello")
+            } else {
+                alert("Login Failed: " + data.message);
+            }
+        })
+        .catch(error => {
+            console.error("Error:", error);
+        });
+
+        console.log("Submitted successfully");
+    }
+</script>
+
+</body>
+</html>
