@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Blog</title>
+    <style>
+      
+    </style>
+    <link rel="stylesheet" href="vcreateblog.css">
+</head>
+<body>
+    <div class="container">
+        <h2>Create a Blog Post</h2>
+        <form id="blogForm">
+            <input type="text" id="title" placeholder="Blog Title" required>
+            <textarea id="content" rows="5" placeholder="Blog Content" required></textarea>
+            <!-- <input type="text" id="token" placeholder="JWT Token (Required for Posting)" required> -->
+            <button type="submit">Submit Blog</button>
+        </form>
+        <p id="message"></p>
+    </div>
+
+    <script>
+        document.getElementById("blogForm").addEventListener("submit", async function(event) {
+            event.preventDefault();
+
+            const title = document.getElementById("title").value;
+            const content = document.getElementById("content").value;
+         
+            const message = document.getElementById("message");
+            const access_token = localStorage.getItem("token")
+          
+            const response = await fetch("http://127.0.0.1:8000/blogs/", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": "Bearer "+access_token
+                },
+                body: JSON.stringify({ title, content })
+            });
+
+            if (response.ok) {
+                console.log("Yess")
+                message.textContent = "Blog post created successfully!";
+                message.style.color = "green";
+                document.getElementById("blogForm").reset();
+            } else {
+                message.textContent = "Failed to create blog. Check your token!";
+                message.style.color = "red";
+            }
+        });
+    </script>
+</body>
+</html>

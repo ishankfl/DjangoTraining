@@ -1,0 +1,50 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Blog Posts</title>
+    <style>
+       
+    </style>
+    <link rel="stylesheet" href="viewblog.css">
+</head>
+<body>
+    <div class="container">
+        <h2>Blog Posts</h2>
+        <div id="blogList"></div>
+    </div>
+
+    <script>
+        async function fetchBlogs() {
+            const response = await fetch("http://127.0.0.1:8000/blogs/");
+            console.log(response)
+            const blogs = await response.json();
+            const blogList = document.getElementById("blogList");
+
+            blogList.innerHTML = "";
+            blogs.forEach(blog => {
+                const div = document.createElement("div");
+                div.className = "blog-card";
+
+                div.innerHTML = `
+                    <img src="${blog.author.profile_picture}" alt="Author">
+                    <div class="blog-content">
+                        <h3>${blog.title}</h3>
+                        <p>${blog.content}</p>
+                        <p class="blog-meta">
+                            <strong>By:</strong> ${blog.author.first_name} ${blog.author.last_name} | 
+                            <strong>Date:</strong> ${new Date(blog.created_at).toLocaleDateString()} |
+                            👀 ${blog.view_count} Views | ❤️ ${blog.like_count} Likes | 💬 ${blog.total_comments} Comments
+                        </p>
+                    </div>
+                `;
+                blogList.appendChild(div);
+            });
+        }
+
+        fetchBlogs();
+    </script>
+</body>
+</html>
