@@ -41,7 +41,6 @@ INSTALLED_APPS = [
     'rest_framework',
     'user',
     'blog',
-    'rest_framework_simplejwt',
     'corsheaders'
 ]
 CORS_ALLOWED_ORIGINS =[

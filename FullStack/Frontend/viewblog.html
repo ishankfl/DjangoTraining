@@ -27,9 +27,12 @@
             blogs.forEach(blog => {
                 const div = document.createElement("div");
                 div.className = "blog-card";
+                div.onclick = () =>{
+                    window.location.href = `singleblogview.html?id=${blog.id}`
+                }
 
                 div.innerHTML = `
-                    <img src="${blog.author.profile_picture}" alt="Author">
+                    <img src="${blog.profile_picture}" alt="${blog.profile_picture}"">
                     <div class="blog-content">
                         <h3>${blog.title}</h3>
                         <p>${blog.content}</p>

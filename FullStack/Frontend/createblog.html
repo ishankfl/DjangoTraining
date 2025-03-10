@@ -15,6 +15,7 @@
         <form id="blogForm">
             <input type="text" id="title" placeholder="Blog Title" required>
             <textarea id="content" rows="5" placeholder="Blog Content" required></textarea>
+            <input type="file" name="profile_picture" id="profile_picture" required>
             <!-- <input type="text" id="token" placeholder="JWT Token (Required for Posting)" required> -->
             <button type="submit">Submit Blog</button>
         </form>
@@ -24,9 +25,18 @@
     <script>
         document.getElementById("blogForm").addEventListener("submit", async function(event) {
             event.preventDefault();
+            const formData = new FormData();
+
 
             const title = document.getElementById("title").value;
             const content = document.getElementById("content").value;
+
+            formData.append('title',title);
+            formData.append('content',content)
+            const image = document.getElementById('profile_picture').files[0];
+            if (image){
+                formData.append('profile_picture', image);
+            }
          
             const message = document.getElementById("message");
             const access_token = localStorage.getItem("token")
@@ -34,10 +44,9 @@
             const response = await fetch("http://127.0.0.1:8000/blogs/", {
                 method: "POST",
                 headers: {
-                    "Content-Type": "application/json",
                     "Authorization": "Bearer "+access_token
                 },
-                body: JSON.stringify({ title, content })
+                body: formData
             });
 
             if (response.ok) {
