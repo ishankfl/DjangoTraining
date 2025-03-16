@@ -20,6 +20,14 @@
             👀 <span id="viewCount"></span> Views | ❤️ <span id="likeCount"></span> Likes | 💬 <span id="commentCount"></span> Comments
         </p>
 
+        <div id="commentList" class="commentList">
+            Comment
+
+        </div>
+        <h3>Add a Comment</h3>
+        <textarea id="commentInput" placeholder="Write your comment here..."></textarea>
+        <button id="submitComment">Submit Comment</button>
+
         <div class="buttons">
             <button id="updateBtn">Update</button>
             <button id="deleteBtn">Delete</button>
@@ -47,6 +55,7 @@
 
                 const blog = await response.json();
                 console.log(blog)
+                getComment(blog.comments)
                 console.log(blog.title)
                 document.getElementById("blogTitle").innerText = blog.title;
                 document.getElementById("blogAuthor").innerText = `By: ${blog.author.first_name} ${blog.author.last_name}`;
@@ -84,8 +93,59 @@
             window.location.href = `updateblog.html?id=${blogId}`;
         }
 
+        function getComment(comments){
+            const commentList = document.getElementById("commentList");
+            commentList.innerHTML = "";
+            comments.forEach(oneComment => {
+                console.log("Each comment")
+                console.log(oneComment)
+                const comment = document.createElement("div");
+                comment.innerHTML = `Comment ${oneComment.id} ___ `+oneComment.content;
+
+                commentList.appendChild(comment)
+            })
+
+        }
+
+        
+        async function submitComment() {
+            const commentContent = document.getElementById("commentInput").value.trim();
+            if (commentContent === "") {
+                alert("Comment cannot be empty!");
+                return;
+            }
+
+            try {
+                const response = await fetch(`http://127.0.0.1:8000/blogs/comment/${blogId}/`, {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": `Bearer ${localStorage.getItem("token")}` // Ensure user is logged in
+                    },
+                    body: JSON.stringify({ content: commentContent })
+                });
+
+                if (response.ok) {
+                    const commentList = document.getElementById("commentList");
+               
+                const comment = document.createElement("div");
+                comment.innerHTML = `Comment___ `+commentContent;
+
+                commentList.appendChild(comment)
+                    alert("Comment added successfully!");
+                    document.getElementById("commentInput").value = "";
+                    // fetchBlog(); // Reload the blog to show new comment
+                } else {
+                    alert("Failed to add comment.");
+                }
+            } catch (error) {
+                console.error("Error adding comment:", error);
+            }
+        }
+
         document.getElementById("deleteBtn").addEventListener("click", deleteBlog);
         document.getElementById("updateBtn").addEventListener("click", updateBlog);
+        document.getElementById("submitComment").addEventListener("click", submitComment);
 
         fetchBlog();
     </script>
