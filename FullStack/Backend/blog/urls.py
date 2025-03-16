@@ -16,9 +16,16 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include
-from .views import BlogListCreateView, SingleBlogView, update_blogview
+from .views import BlogListCreateView, SingleBlogView, update_blogview, CommentCreateView
 urlpatterns = [
     path('',BlogListCreateView.as_view(), name='blog-create'), #127.0.0.1:800/blogs/
     path('single-view/<int:pk>/',SingleBlogView.as_view(), name='single-blog-view'), #127.0.0.1:800/blogs/
-    path('view-update/<int:id>/', update_blogview, name = 'update_blog')
+    path('view-update/<int:id>/', update_blogview, name = 'update_blog'),
+    path('comment/<int:blog_id>/',CommentCreateView.as_view(),name='comment-create-view' )
 ]
+
+# blog/comment/2/
+
+# post
+
+# content:"hello"
